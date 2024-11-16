@@ -7,7 +7,7 @@ if [ -z "$pid" ]; then
   echo "$timestamp1 - ATENCIÓN: No se encontró ningún proceso escuchando en el puerto 7870. Reactivando aplicación."
   #Reiniciando proceso
   cd
-  cd code/gradio-standalone-do/
+  cd code/ocean-devo-astroblend/
   source venv/bin/activate
   python app.py &
   PID=$(pgrep -f "python app.py")
