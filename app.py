@@ -12,7 +12,7 @@ def iniciar():
 #INTERFAZ
 #Credit Related Elements
 html_credits = gr.HTML(visible=True)
-lbl_console = gr.Label(label="AI Terminal Messages", value="AI Engine ready...", container=True)
+lbl_console = gr.Label(label="AI Terminal " + globales.version + " messages", value="AI Engine ready...", container=True)
 btn_buy = gr.Button("Get Credits", visible=False, size='lg')
 
 #Customizable Inputs and Outputs
