@@ -2,7 +2,6 @@ import random
 import gradio as gr
 
 def theme_selector():
-
     temas_posibles = [
         gr.themes.Base(),
         gr.themes.Default(),
@@ -10,8 +9,6 @@ def theme_selector():
         gr.themes.Monochrome(),
         gr.themes.Soft()
     ]
-
     tema = random.choice(temas_posibles)
-    print("Tema random: ", tema)
 
     return tema
