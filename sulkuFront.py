@@ -1,31 +1,6 @@
-import time
 import globales
 import sulkuPypi
 import gradio as gr
-
-#Controla lo que se depliega en el frontend y que tiene que ver con llamados a Sulku.
-def noCredit(usuario):
-    info_window = "Out of credits..."
-    path = 'images/no-credits.png'
-    tokens = 0
-    html_credits = visualizar_creditos(tokens, usuario)   
-
-    return info_window, path, html_credits
-
-def presentacionFinal(usuario, accion):
-        
-    capsule = sulkuPypi.encripta(usuario).decode("utf-8") #decode es para quitarle el 'b
-    
-    if accion == "debita":        
-        tokens = sulkuPypi.debitTokens(capsule, globales.work, globales.env)
-        info_window = "Image ready!"        
-    else: 
-        info_window = "No face in source path detected."
-        tokens = sulkuPypi.getTokens(capsule)
-    
-    html_credits = visualizar_creditos(tokens, usuario)       
-    
-    return html_credits, info_window
 
 def display_tokens(request: gr.Request):
    
@@ -48,3 +23,26 @@ def visualizar_creditos(nuevos_creditos, usuario):
                     """    
      
     return html_credits
+
+#Controla lo que se depliega en el frontend y que tiene que ver con llamados a Sulku.
+def noCredit(usuario):
+    info_window = "Out of credits..."
+    path = 'images/no-credits.png'
+    tokens = 0
+    html_credits = visualizar_creditos(tokens, usuario)
+    return info_window, path, html_credits
+
+def presentacionFinal(usuario, accion):
+        
+    capsule = sulkuPypi.encripta(usuario).decode("utf-8")
+    
+    if accion == "debita":        
+        tokens = sulkuPypi.debitTokens(capsule, globales.work, globales.env)
+        info_window = "Image ready!"        
+    else: 
+        info_window = "No face in source path detected."
+        tokens = sulkuPypi.getTokens(capsule)
+    
+    html_credits = visualizar_creditos(tokens, usuario)       
+    
+    return html_credits, info_window
