@@ -10,9 +10,9 @@ if [ -z "$pid" ]; then
   cd code/ocean-devo-astroblend/
   source venv/bin/activate
   python app.py &
-  PID=$(pgrep -f "python app.py")
+  nuevo_proceso=$(pgrep -f "python app.py")
   timestamp2=$(date +"%d-%m-%Y %H:%M:%S")
-  echo "$timestamp2 - READY: Proceso reiniciado con id $PID. "
+  echo "$timestamp2 - READY: Proceso reiniciado con id $nuevo_proceso. "
 else
   timestamp3=$(date +"%d-%m-%Y %H:%M:%S")
   echo "$timestamp3 - ALIVE: Astroblend-dev, proceso $pid arriba y funcionando."
