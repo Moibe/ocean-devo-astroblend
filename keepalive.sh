@@ -15,5 +15,5 @@ if [ -z "$pid" ]; then
   echo "$timestamp2 - READY: Proceso reiniciado con id $PID. "
 else
   timestamp3=$(date +"%d-%m-%Y %H:%M:%S")
-  echo "$timestamp3 - ALIVE: Proceso $pid arriba y funcionando."
+  echo "$timestamp3 - ALIVE: Astroblend-dev, proceso $pid arriba y funcionando."
 fi
