@@ -1,5 +1,4 @@
 import sets
-import time
 
 def inputs_selector(set):    
 
