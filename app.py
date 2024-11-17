@@ -25,7 +25,7 @@ with gr.Blocks(theme=globales.tema, css="footer {visibility: hidden}") as main:
     with gr.Row():
         demo = gr.Interface(
             fn=funciones.perform,
-            inputs=[input1, input2], #Éste es el que podría variar entre 1 o 2 inputs.
+            inputs=[input1, input2], 
             outputs=[result, lbl_console, html_credits, btn_buy], 
             flagging_mode='never'
             )

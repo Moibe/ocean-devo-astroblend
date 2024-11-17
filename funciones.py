@@ -5,16 +5,12 @@ import sulkuFront
 import debit_rules
 import gradio as gr
 import gradio_client
-import time
 
 abrazo = bridges.hug
 btn_buy = gr.Button("Get Credits", visible=False, size='lg')
 
 #PERFORM es la app INTERNA que llamará a la app externa.
-def perform(input1, request: gr.Request, *args):
-
-    #Future: Maneja una excepción para el concurrent.futures._base.CancelledError
-    #Future: Que no se vea el resultado anterior al cargar el nuevo resultado! (aunque solo se ven los resultados propios.)         
+def perform(input1, input2, request: gr.Request, *args):
 
     tokens = sulkuPypi.getTokens(sulkuPypi.encripta(request.username).decode("utf-8"), globales.env)
     
@@ -22,8 +18,7 @@ def perform(input1, request: gr.Request, *args):
     autorizacion = sulkuPypi.authorize(tokens, globales.work)
     if autorizacion is True:
         #IMPORTANTE: EJECUCIÓN DE LA APP EXTERNA: mass siempre será la aplicación externa que consultamos via API.   
-        #resultado = mass(input1,input2)
-        resultado = mass(input1, *args)
+        resultado = mass(input1,input2)        
     else:
         info_window, resultado, html_credits = sulkuFront.noCredit(request.username)
         return resultado, info_window, html_credits, btn_buy
@@ -41,35 +36,8 @@ def perform(input1, request: gr.Request, *args):
 
 #MASS es la que ejecuta la aplicación EXTERNA
 def mass(input1, input2): 
-
     imagenSource = gradio_client.handle_file(input1) 
-    imagenDestiny = gradio_client.handle_file(input2)       
-
+    imagenDestiny = gradio_client.handle_file(input2) 
     client = gradio_client.Client(globales.api, hf_token=abrazo)
     result = client.predict(imagenSource, imagenDestiny, api_name="/predict")
-
     return result
-
-def mass_zhi(input1, input2): 
-
-    imagenSource = gradio_client.handle_file(input1) 
-    #imagenDestiny = gradio_client.handle_file(input2)       
-
-    client = gradio_client.Client(globales.api)
-    #result = client.predict(imagenSource, imagenDestiny, api_name="/predict")
-
-    result = client.predict(
-		prompt="A hot girl in sexy cocktail dress topless.",
-		person_img=imagenSource,
-		seed=486992,
-		randomize_seed=False,
-		height=1024,
-		width=1024,
-		api_name="/character_gen"
-        )
-    
-    print(result)
-    print(result[0])
-    
-
-    return result[0]
