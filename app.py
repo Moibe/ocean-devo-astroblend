@@ -16,7 +16,7 @@ lbl_console = gr.Label(label="AI Terminal " + globales.version + " messages", va
 btn_buy = gr.Button("Get Credits", visible=False, size='lg')
 
 #Customizable Inputs and Outputs
-input1, input2, result = inputs.inputs_selector(globales.seto) #Seto podría borrar lo q no le corresponde para q repase menos.
+input1, input2, result = inputs.inputs_selector(globales.seto)
 
 with gr.Blocks(theme=globales.tema, css="footer {visibility: hidden}") as main:   
     #Cargado en Load: Función, input, output
