@@ -20,7 +20,7 @@ input1, input2, result = inputs.inputs_selector(globales.seto)
 
 with gr.Blocks(theme=globales.tema, css="footer {visibility: hidden}") as main:   
     #Cargado en Load: Función, input, output
-    main.load(sulkuFront.display_tokens, None, html_credits) 
+    main.load(sulkuFront.precarga, None, html_credits) 
    
     with gr.Row():
         demo = gr.Interface(
