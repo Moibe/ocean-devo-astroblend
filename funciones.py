@@ -20,27 +20,35 @@ def perform(input1, input2, request: gr.Request):
         try: 
             resultado = mass(input1, input2)
         except Exception as e:            
-            info_window, resultado, html_credits = sulkuFront.aError(request.username, tokens, excepcion = tools.apicomProcessor(e))
+            info_window, resultado, html_credits = sulkuFront.aError(request.username, tokens, excepcion = tools.titulizaExcepDeAPI(e))
             return resultado, info_window, html_credits, btn_buy       
     else:
         info_window, resultado, html_credits = sulkuFront.noCredit(request.username)
         return resultado, info_window, html_credits, btn_buy
     
-    #**SE EJECUTA EL LLAMADO Y OFRECE UN RESULTADO.**
-    
-    #2: ¿El resultado es debitable?
-    if debit_rules.debita(resultado) == True:
+    #Primero revisa si es imagen!: 
+    if "result.png" in resultado:
+        #Si es imagen, debitarás.
         html_credits, info_window = sulkuFront.presentacionFinal(request.username, "debita")
-    else:
-        html_credits, info_window = sulkuFront.presentacionFinal(request.username, "no debita") 
+    else: 
+        #Si no es imagen es un texto que nos dice algo.
+        info_window, resultado, html_credits = sulkuFront.aError(request.username, tokens, excepcion = tools.titulizaExcepDeAPI(resultado))
+        return resultado, info_window, html_credits, btn_buy   
+    
+    # #2: ¿El resultado es debitable?
+    # if debit_rules.debita(resultado) == True:
+    #     html_credits, info_window = sulkuFront.presentacionFinal(request.username, "debita")
+    # else:
+    #     html_credits, info_window = sulkuFront.presentacionFinal(request.username, "no debita") 
             
     #Lo que se le regresa oficialmente al entorno.
     return resultado, info_window, html_credits, btn_buy
 
 #MASS es la que ejecuta la aplicación EXTERNA
 def mass(input1, input2): 
+    
+    client = gradio_client.Client(globales.api, hf_token=bridges.hug)
     imagenSource = gradio_client.handle_file(input1) 
     imagenDestiny = gradio_client.handle_file(input2) 
-    client = gradio_client.Client(globales.api, hf_token=bridges.hug)
     result = client.predict(imagenSource, imagenDestiny, api_name="/predict")
     return result

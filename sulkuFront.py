@@ -1,27 +1,18 @@
 import globales
 import sulkuPypi
 import gradio as gr
-import gradio_client
-import bridges
 import tools
 import threading
-
+from huggingface_hub import HfApi
+import sulkuMessages
 
 result_from_displayTokens = None
-
-def initAPI():
-    #PROCESO1
-    print("Estoy en turn on API.")
-    try: #No usar si siempre estará prendida.
-        client = gradio_client.Client(globales.api, hf_token=bridges.hug)
-        terminal = "AI engine ready."
-        client = None
-    except Exception as e:
-        print("No api, encendiendo: ", e)  
+result_from_initAPI = None 
 
 def displayTokens(request: gr.Request):
-    #PROCESO2
-    print("Estoy en displayTokens...")
+
+    global result_from_displayTokens
+    
     novelty = sulkuPypi.getNovelty(sulkuPypi.encripta(request.username).decode("utf-8"), globales.aplicacion)    
     if novelty == "new_user": 
         display = gr.Textbox(visible=False)
@@ -29,21 +20,21 @@ def displayTokens(request: gr.Request):
         tokens = sulkuPypi.getTokens(sulkuPypi.encripta(request.username).decode("utf-8"), globales.env)
         display = visualizar_creditos(tokens, request.username) 
 
-    global result_from_displayTokens
     result_from_displayTokens = display 
 
     return display
 
 def precarga(request: gr.Request):
-    global result_from_displayTokens
+    
+    #global result_from_displayTokens
 
-    thread1 = threading.Thread(target=initAPI)
+    #thread1 = threading.Thread(target=initAPI)
     thread2 = threading.Thread(target=displayTokens, args=(request,))
 
-    thread1.start()
+    #thread1.start()
     thread2.start()
 
-    thread1.join()  # Espera a que el hilo 1 termine
+    #thread1.join()  # Espera a que el hilo 1 termine
     thread2.join()  # Espera a que el hilo 2 termine
 
     return result_from_displayTokens  
@@ -61,7 +52,7 @@ def visualizar_creditos(nuevos_creditos, usuario):
 
 #Controla lo que se depliega en el frontend y que tiene que ver con llamados a Sulku.
 def noCredit(usuario):
-    info_window = "Out of credits..."
+    info_window = sulkuMessages.out_of_credits
     path = 'images/no-credits.png'
     tokens = 0
     html_credits = visualizar_creditos(tokens, usuario)   
@@ -69,11 +60,34 @@ def noCredit(usuario):
     return info_window, path, html_credits
 
 def aError(usuario, tokens, excepcion):
-    info_window = tools.manejadorExcepciones(excepcion)
+    info_window = manejadorExcepciones(excepcion)
     path = 'images/error.png'
     tokens = tokens
     html_credits = visualizar_creditos(tokens, usuario)   
     return info_window, path, html_credits
+
+def manejadorExcepciones(excepcion):
+    #El parámetro que recibe es el texto despliega ante determinada excepción:
+    if excepcion == "PAUSED": 
+        info_window = sulkuMessages.PAUSED
+    elif excepcion == "RUNTIME_ERROR":
+        info_window = sulkuMessages.RUNTIME_ERROR
+    elif excepcion == "STARTING":
+        info_window = sulkuMessages.STARTING
+    elif excepcion == "HANDSHAKE_ERROR":
+        info_window = sulkuMessages.HANDSHAKE_ERROR
+    elif excepcion == "GENERAL":
+        info_window = sulkuMessages.GENERAL
+    elif excepcion == "NO_FACE":
+        info_window = sulkuMessages.NO_FACE
+    elif excepcion == "NO_FILE":
+        info_window = sulkuMessages.NO_FILE
+    elif "quota" in excepcion: #Caso especial porque el texto cambiará citando la cuota.
+        info_window = excepcion
+    else:
+        info_window = sulkuMessages.ELSE
+
+    return info_window
 
 def presentacionFinal(usuario, accion):
         
