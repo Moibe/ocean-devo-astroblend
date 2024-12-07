@@ -93,7 +93,7 @@ def presentacionFinal(usuario, accion):
     
     if accion == "debita":        
         tokens = sulkuPypi.debitTokens(capsule, globales.work, globales.env)
-        info_window = "Image ready!"        
+        info_window = sulkuMessages.result_ok        
     else: 
         info_window = "No face in source path detected."
         tokens = sulkuPypi.getTokens(capsule, globales.env)
