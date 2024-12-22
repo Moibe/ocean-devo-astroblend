@@ -3,6 +3,7 @@ import gradio as gr
 import globales
 from huggingface_hub import HfApi
 import bridges
+import sulkuPypi
 
 def theme_selector():
     temas_posibles = [
@@ -15,19 +16,40 @@ def theme_selector():
     tema = random.choice(temas_posibles)
     return tema
 
-def initAPI():
+def elijeAPI():
+
+    diferencia = sulkuPypi.getQuota() - globales.process_cost
+
+    if diferencia >= 0:
+        #Puedes usar Zero.
+        api = globales.api_zero
+        tipo_api = "gratis"
+        #Además Si el resultado puede usar la Zero "por última vez", debe de ir prendiendo la otra.
+        #if diferencia es menor que el costo de un sig.  del proceso, ve iniciando ya la otra API.
+        if diferencia < globales.process_cost:
+            print("Preventivamente iremos prendiendo la otra.")
+            initAPI(globales.api_cost) 
+    else:
+        api = globales.api_cost
+        tipo_api = "costo"
+
+    print("La API elegida es: ", api)
+
+    return api, tipo_api
+
+def initAPI(api):
     
     global result_from_initAPI
 
     try:
-        repo_id = globales.api
-        api = HfApi(token=bridges.hug)
+        repo_id = api
+        llave = HfApi(token=bridges.hug)
         runtime = api.get_space_runtime(repo_id=repo_id)
         print("Stage: ", runtime.stage)
         #"RUNNING_BUILDING", "APP_STARTING", "SLEEPING", "RUNNING", "PAUSED", "RUNTIME_ERROR"
-        if runtime.stage == "SLEEPING":
-            api.restart_space(repo_id=repo_id)
-            print("Desperando")
+        if runtime.stage == "SLEEPING" or runtime.stage == "PAUSED":
+            llave.restart_space(repo_id=repo_id)
+            
         print("Hardware: ", runtime.hardware)
         result_from_initAPI = runtime.stage
 
