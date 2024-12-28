@@ -1,6 +1,6 @@
 import gradio as gr
 
-version = "5.3.6"
+version = "5.3.7"
 env = "dev"
 aplicacion = "astroblend-dev"
 seleccion_api = "eligeAOB" #eligeGratisOCosto , eligeAOB o eligeGratisOCosto

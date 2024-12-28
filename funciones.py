@@ -59,7 +59,7 @@ def mass(input1, input2):
     
         #(Si llega aquí, debes debitar de la quota, incluso si detecto no-face o algo.)
         if tipo_api == "gratis":
-            print("Como el tipo api fue gratis, si debitaremos la quota.")
+            print("Como el tipo api fue gratis, si debitaremos la quota gratuita.")
             sulkuPypi.updateQuota(globales.process_cost)
         #No debitas la cuota si no era gratis, solo aplica para Zero.  
 
