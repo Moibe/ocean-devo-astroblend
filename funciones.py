@@ -2,7 +2,6 @@ import bridges
 import globales
 import sulkuPypi
 import sulkuFront
-import debit_rules
 import gradio as gr
 import gradio_client
 import tools
@@ -47,12 +46,8 @@ def perform(input1, input2, request: gr.Request):
 #MASS es la que ejecuta la aplicación EXTERNA
 def mass(input1, input2):
 
-    if globales.same_api == False: #Si son diferentes apis, realiza el proceso de selección.
-        api, tipo_api = tools.elijeAPI()
-        print("Una vez elegido API, el tipo api es: ", tipo_api)
-    else: #Si no, deja la primera y no corras ningun proceso. 
-        api = globales.api_zero
-        tipo_api = "cost" 
+    api, tipo_api = tools.eligeAPI(globales.seleccion_api)
+    print("Una vez elegido API, el tipo api es: ", tipo_api)
     
     client = gradio_client.Client(api, hf_token=bridges.hug)
     imagenSource = gradio_client.handle_file(input1) 

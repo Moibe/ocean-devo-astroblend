@@ -16,25 +16,59 @@ def theme_selector():
     tema = random.choice(temas_posibles)
     return tema
 
-def elijeAPI():
+def eligeAPI(opcion):
 
+    funciones = {
+        "eligeQuotaOCosto": eligeQuotaOCosto,
+        "eligeAOB": eligeAOB,
+        "eligeGratisOCosto": eligeGratisOCosto
+    }
+    
+    if opcion in funciones:
+        print("Opción en Funciones")
+        funcion_elegida = funciones[opcion]
+        api, tipo_api = funcion_elegida()
+    else:
+        print("Opción no válida")
+
+    return api, tipo_api
+
+#Los tipos de elección son diferentes porque tienen diferentes reglas de negocio.
+
+def eligeGratisOCosto():
+#Se eligirá en los casos en los que sin costo funciona bien como Astroblend pero por si se quiere mejorar hacia Costo.
+#Por ahora funcionará exactamente igual que eligeAoB, en el futuro se basará en reglas de membresía.
+    apis = [globales.api_a, globales.api_b]
+    api_elegida = random.choice(apis)
+    print("Print api elegida: ", api_elegida)
+    api, tipo_api = api_elegida
+    return api, tipo_api
+
+def eligeAOB():
+#Se eligirá cuando se tenga un control sobre la cantidad en queu y se redirija hacia una segunda fuente alternativa.
+    # Lista con las opciones
+    apis = [globales.api_a, globales.api_b]
+    api_elegida = random.choice(apis)
+    print("Print api elegida: ", api_elegida)
+    api, tipo_api = api_elegida
+    return api, tipo_api
+
+def eligeQuotaOCosto():
+#Se eligirá en los casos en los que se use Zero, para extender las posibilidades de Quota y después usar Costo.
     diferencia = sulkuPypi.getQuota() - globales.process_cost
 
     if diferencia >= 0:
-        #Puedes usar Zero.
-        api = globales.api_zero
-        tipo_api = "gratis"
+        #Entonces puedes usar Zero.
+        api, tipo_api = globales.api_zero
         #Además Si el resultado puede usar la Zero "por última vez", debe de ir prendiendo la otra.
         #if diferencia es menor que el costo de un sig.  del proceso, ve iniciando ya la otra API.
         if diferencia < globales.process_cost:
             print("Preventivamente iremos prendiendo la otra.")
             initAPI(globales.api_cost) 
     else:
-        api = globales.api_cost
-        tipo_api = "costo"
+        api, tipo_api = globales.api_cost
 
     print("La API elegida es: ", api)
-
     return api, tipo_api
 
 def initAPI(api):
